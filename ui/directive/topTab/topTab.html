@@ -1,4 +1,10 @@
 <tabset>
+    <tab heading="{{ 'file' | lang: 'ui/tabs'; }}" ng-click="toggleTopTab('file')" select="setCurTab('file')">
+        <renew-minder minder="minder"></renew-minder>
+        <upload-to-repo minder="minder"></upload-to-repo>
+         <load-from-repo minder="minder"></load-from-repo>
+         <publish-minder minder="minder"></publish-minder>
+    </tab>
     <tab heading="{{ 'idea' | lang: 'ui/tabs'; }}" ng-click="toggleTopTab('idea')" select="setCurTab('idea')">
         <undo-redo editor="editor"></undo-redo>
         <append-node minder="minder"></append-node>
@@ -23,4 +29,5 @@
         <select-all minder="minder"></select-all>
         <search-btn minder="minder"></search-btn>
     </tab>
+
 </tabset>

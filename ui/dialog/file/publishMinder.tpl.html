@@ -1,0 +1,26 @@
+<div class="modal-header">
+    <h3 class="modal-title">{{ 'publish-minder' | lang:'ui' }}</h3>
+</div>
+<div class="modal-body">
+    <div class="form-group">
+        <label for="jarvis-mind-map-name">Mind-Map 名称</label>
+        <input type="text" class="form-control" ng-model="data.mind_map_name" ng-blur="titlePassed = true" id="jarvis-mind-map-name" placeholder="Mind Map 名称">
+    </div>
+
+    <div class="form-group">
+        <label for="jarvis-mind-map-comment">备注</label>
+        <textarea
+                type="text"
+                rows="8"
+                class="form-control single-input"
+                id="jarvis-mind-map-comment"
+                placeholder="Mind Map 备注"
+                > {{ data.mind_map_comment }}
+        </textarea>
+    </div>
+
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-click="ok()">确定</button>
+    <button class="btn btn-warning" ng-click="cancel()">取消</button>
+</div>

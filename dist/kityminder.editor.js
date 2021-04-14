@@ -1,9 +1,9 @@
 /*!
  * ====================================================
- * kityminder-editor - v1.0.67 - 2019-02-12
+ * kityminder-editor - v1.0.67 - 2021-04-10
  * https://github.com/fex-team/kityminder-editor
  * GitHub: https://github.com/fex-team/kityminder-editor 
- * Copyright (c) 2019 ; Licensed 
+ * Copyright (c) 2021 ; Licensed 
  * ====================================================
  */
 
@@ -1477,11 +1477,25 @@ _p[15] = {
                 action: exportNodeData,
                 next: "idle"
             });
+            main.button({
+                position: "bottom",
+                label: "导入Jarvis节点",
+                key: "Alt + Q",
+                enable: function() {
+                    var selectedNodes = minder.getSelectedNodes();
+                    return selectedNodes.length == 1;
+                },
+                action: importJarvisNodeData,
+                next: "idle"
+            });
             function importNodeData() {
                 minder.fire("importNodeData");
             }
             function exportNodeData() {
                 minder.fire("exportNodeData");
+            }
+            function importJarvisNodeData() {
+                minder.fire("importJarvisNodeData");
             }
         }
         return module.exports = NodeRuntime;
@@ -2129,10 +2143,18 @@ angular.module('kityminderEditor').run(['$templateCache', function($templateCach
   );
 
 
+  $templateCache.put('ui/directive/loadFromRepo/loadFromRepo.html',
+    "<div class=\"btn-group-vertical\" dropdown is-open=\"isopen\"><div class=\"\" is-open=\"isopen\"><button type=\"button\" class=\"btn btn-default\" title=\"{{ 'load-from-repo' | lang:'ui' }}\" ng-class=\"{'active': isopen}\" ng-click=\"load_from_repo()\">{{ 'load-from-repo' | lang:'ui' }}</button></div></div>"
+  );
+
+
   $templateCache.put('ui/directive/navigator/navigator.html',
-    "<div class=\"nav-bar\"><div class=\"nav-btn zoom-in\" ng-click=\"minder.execCommand('zoomIn')\" title=\"{{ 'zoom-in' | lang : 'ui' }}\" ng-class=\"{ 'active' : getZoomRadio(zoom) == 0 }\"><div class=\"icon\"></div></div><div class=\"zoom-pan\"><div class=\"origin\" ng-style=\"{'transform': 'translate(0, ' + getHeight(100) + 'px)'}\" ng-click=\"minder.execCommand('zoom', 100);\"></div><div class=\"indicator\" ng-style=\"{\n" +
-    "             'transform': 'translate(0, ' + getHeight(zoom) + 'px)',\n" +
-    "             'transition': 'transform 200ms'\n" +
+    "<div class=\"nav-bar\"><div class=\"nav-btn zoom-in\" ng-click=\"minder.execCommand('zoomIn')\" title=\"{{ 'zoom-in' | lang : 'ui' }}\" ng-class=\"{ 'active' : getZoomRadio(zoom) == 0 }\"><div class=\"icon\"></div></div><div class=\"zoom-pan\"><div class=\"origin\" ng-style=\"{'transform': 'translate(0, ' + getHeight(100) + 'px)'}\" ng-click=\"minder.execCommand('zoom', 100);\"></div><div class=\"indicator\" ng-style=\"{\r" +
+    "\n" +
+    "             'transform': 'translate(0, ' + getHeight(zoom) + 'px)',\r" +
+    "\n" +
+    "             'transition': 'transform 200ms'\r" +
+    "\n" +
     "             }\"></div></div><div class=\"nav-btn zoom-out\" ng-click=\"minder.execCommand('zoomOut')\" title=\"{{ 'zoom-out' | lang : 'ui' }}\" ng-class=\"{ 'active' : getZoomRadio(zoom) == 1 }\"><div class=\"icon\"></div></div><div class=\"nav-btn hand\" ng-click=\"minder.execCommand('hand')\" title=\"{{ 'hand' | lang : 'ui' }}\" ng-class=\"{ 'active' : minder.queryCommandState('hand') == 1 }\"><div class=\"icon\"></div></div><div class=\"nav-btn camera\" ng-click=\"minder.execCommand('camera', minder.getRoot(), 600);\" title=\"{{ 'camera' | lang : 'ui' }}\"><div class=\"icon\"></div></div><div class=\"nav-btn nav-trigger\" ng-class=\"{'active' : isNavOpen}\" ng-click=\"toggleNavOpen()\" title=\"{{ 'navigator' | lang : 'ui' }}\"><div class=\"icon\"></div></div></div><div class=\"nav-previewer\" ng-show=\"isNavOpen\"></div>"
   );
 
@@ -2143,13 +2165,20 @@ angular.module('kityminderEditor').run(['$templateCache', function($templateCach
 
 
   $templateCache.put('ui/directive/noteEditor/noteEditor.html',
-    "<div class=\"panel panel-default\" ng-init=\"noteEditorOpen = false\" ng-show=\"noteEditorOpen\"><div class=\"panel-heading\"><h3 class=\"panel-title\">备注</h3><span>（<a class=\"help\" href=\"https://www.zybuluo.com/techird/note/46064\" target=\"_blank\">支持 GFM 语法书写</a>）</span> <i class=\"close-note-editor glyphicon glyphicon-remove\" ng-click=\"closeNoteEditor()\"></i></div><div class=\"panel-body\"><div ng-show=\"noteEnabled\" ui-codemirror=\"{ onLoad: codemirrorLoaded }\" ng-model=\"noteContent\" ui-codemirror-opts=\"{\n" +
-    "                gfm: true,\n" +
-    "                breaks: true,\n" +
-    "                lineWrapping : true,\n" +
-    "                mode: 'gfm',\n" +
-    "                dragDrop: false,\n" +
-    "                lineNumbers:true\n" +
+    "<div class=\"panel panel-default\" ng-init=\"noteEditorOpen = false\" ng-show=\"noteEditorOpen\"><div class=\"panel-heading\"><h3 class=\"panel-title\">备注</h3><span>（<a class=\"help\" href=\"https://www.zybuluo.com/techird/note/46064\" target=\"_blank\">支持 GFM 语法书写</a>）</span> <i class=\"close-note-editor glyphicon glyphicon-remove\" ng-click=\"closeNoteEditor()\"></i></div><div class=\"panel-body\"><div ng-show=\"noteEnabled\" ui-codemirror=\"{ onLoad: codemirrorLoaded }\" ng-model=\"noteContent\" ui-codemirror-opts=\"{\r" +
+    "\n" +
+    "                gfm: true,\r" +
+    "\n" +
+    "                breaks: true,\r" +
+    "\n" +
+    "                lineWrapping : true,\r" +
+    "\n" +
+    "                mode: 'gfm',\r" +
+    "\n" +
+    "                dragDrop: false,\r" +
+    "\n" +
+    "                lineNumbers:true\r" +
+    "\n" +
     "             }\"></div><p ng-show=\"!noteEnabled\" class=\"km-note-tips\">请选择节点编辑备注</p></div></div>"
   );
 
@@ -2171,6 +2200,11 @@ angular.module('kityminderEditor').run(['$templateCache', function($templateCach
 
   $templateCache.put('ui/directive/progressEditor/progressEditor.html',
     "<ul class=\"km-progress tool-group\" ng-disabled=\"commandDisabled\"><li class=\"km-progress-item tool-group-item\" ng-repeat=\"p in progresses\" ng-click=\"commandDisabled || minder.execCommand('progress', p)\" ng-class=\"{ active: commandValue == p }\" title=\"{{ getProgressTitle(p) }}\"><div class=\"km-progress-icon tool-group-icon progress-{{p}}\"></div></li></ul>"
+  );
+
+
+  $templateCache.put('ui/directive/publishMinder/publishMinder.html',
+    "<div class=\"btn-group-vertical\" dropdown is-open=\"isopen\"><button type=\"button\" class=\"btn btn-default\" title=\"{{ 'publish-minder' | lang:'ui' }}\" ng-class=\"{'active': isopen}\" ng-click=\"publish_minder()\">{{ 'publish-minder' | lang:'ui' }}</button></div>"
   );
 
 
@@ -2210,12 +2244,36 @@ angular.module('kityminderEditor').run(['$templateCache', function($templateCach
 
 
   $templateCache.put('ui/directive/topTab/topTab.html',
-    "<tabset><tab heading=\"{{ 'idea' | lang: 'ui/tabs'; }}\" ng-click=\"toggleTopTab('idea')\" select=\"setCurTab('idea')\"><undo-redo editor=\"editor\"></undo-redo><append-node minder=\"minder\"></append-node><arrange minder=\"minder\"></arrange><operation minder=\"minder\"></operation><hyper-link minder=\"minder\"></hyper-link><image-btn minder=\"minder\"></image-btn><note-btn minder=\"minder\"></note-btn><priority-editor minder=\"minder\"></priority-editor><progress-editor minder=\"minder\"></progress-editor><resource-editor minder=\"minder\"></resource-editor></tab><tab heading=\"{{ 'appearence' | lang: 'ui/tabs'; }}\" ng-click=\"toggleTopTab('appearance')\" select=\"setCurTab('appearance')\"><template-list minder=\"minder\" class=\"inline-directive\"></template-list><theme-list minder=\"minder\"></theme-list><layout minder=\"minder\" class=\"inline-directive\"></layout><style-operator minder=\"minder\" class=\"inline-directive\"></style-operator><font-operator minder=\"minder\" class=\"inline-directive\"></font-operator></tab><tab heading=\"{{ 'view' | lang: 'ui/tabs'; }}\" ng-click=\"toggleTopTab('view')\" select=\"setCurTab('view')\"><expand-level minder=\"minder\"></expand-level><select-all minder=\"minder\"></select-all><search-btn minder=\"minder\"></search-btn></tab></tabset>"
+    "<tabset><tab heading=\"{{ 'idea' | lang: 'ui/tabs'; }}\" ng-click=\"toggleTopTab('idea')\" select=\"setCurTab('idea')\"><undo-redo editor=\"editor\"></undo-redo><append-node minder=\"minder\"></append-node><arrange minder=\"minder\"></arrange><operation minder=\"minder\"></operation><hyper-link minder=\"minder\"></hyper-link><image-btn minder=\"minder\"></image-btn><note-btn minder=\"minder\"></note-btn><priority-editor minder=\"minder\"></priority-editor><progress-editor minder=\"minder\"></progress-editor><resource-editor minder=\"minder\"></resource-editor></tab><tab heading=\"{{ 'appearence' | lang: 'ui/tabs'; }}\" ng-click=\"toggleTopTab('appearance')\" select=\"setCurTab('appearance')\"><template-list minder=\"minder\" class=\"inline-directive\"></template-list><theme-list minder=\"minder\"></theme-list><layout minder=\"minder\" class=\"inline-directive\"></layout><style-operator minder=\"minder\" class=\"inline-directive\"></style-operator><font-operator minder=\"minder\" class=\"inline-directive\"></font-operator></tab><tab heading=\"{{ 'view' | lang: 'ui/tabs'; }}\" ng-click=\"toggleTopTab('view')\" select=\"setCurTab('view')\"><expand-level minder=\"minder\"></expand-level><select-all minder=\"minder\"></select-all><search-btn minder=\"minder\"></search-btn></tab><tab heading=\"{{ 'file' | lang: 'ui/tabs'; }}\" ng-click=\"toggleTopTab('file')\" select=\"setCurTab('file')\"><upload-to-repo minder=\"minder\"></upload-to-repo><load-from-repo minder=\"minder\"></load-from-repo><publish-minder minder=\"minder\"></publish-minder></tab></tabset>"
   );
 
 
   $templateCache.put('ui/directive/undoRedo/undoRedo.html',
     "<div class=\"km-btn-group do-group\"><div class=\"km-btn-item undo\" ng-disabled=\"editor.history.hasUndo() == false\" ng-click=\"editor.history.hasUndo() == false || editor.history.undo();\" title=\"{{ 'undo' | lang:'ui' }}\"><i class=\"km-btn-icon\"></i></div><div class=\"km-btn-item redo\" ng-disabled=\"editor.history.hasRedo() == false\" ng-click=\"editor.history.hasRedo() == false || editor.history.redo()\" title=\"{{ 'redo' | lang:'ui' }}\"><i class=\"km-btn-icon\"></i></div></div>"
+  );
+
+
+  $templateCache.put('ui/directive/uploadToRepo/uploadToRepo.html',
+    "<div class=\"btn-group-vertical\" dropdown is-open=\"isopen\"><div class=\"\" dropdown is-open=\"isopen\"><button type=\"button\" class=\"btn btn-default\" title=\"{{ 'upload-to-repo' | lang:'ui' }}\" ng-class=\"{'active': isopen}\" ng-click=\"upload_to_repo()\">{{ 'upload-to-repo' | lang:'ui' }}</button></div></div>"
+  );
+
+
+  $templateCache.put('ui/dialog/file/loadFromRepo.tpl.html',
+    "<div class=\"modal-header\"><h3 class=\"modal-title\">{{ 'load-from-repo' | lang:'ui' }}</h3></div><div class=\"modal-body\"><table class=\"table table-striped\" ng-init=\"load_all_jsons()\"><thead><tr><th>Name</th><th>Editor</th><th>Comment</th><th>Updated Datetime</th><th>Operation</th></tr></thead><tbody ng-repeat=\"x in structs\"><tr><td>{{ x.name }}</td><td>{{ x.user || '-' }}</td><td>{{ x.comment || '-' }}</td><td>{{ x.updated_datetime || '-' }}</td><td><a ng-click=\"load_struct(x.json)\" style=\"cursor: pointer\">Load</a></td></tr></tbody></table></div><div class=\"modal-footer\"><button class=\"btn btn-warning\" ng-click=\"cancel()\">取消</button></div>"
+  );
+
+
+  $templateCache.put('ui/dialog/file/publishMinder.tpl.html',
+    "<div class=\"modal-header\"><h3 class=\"modal-title\">{{ 'publish-minder' | lang:'ui' }}</h3></div><div class=\"modal-body\"><div class=\"form-group\"><label for=\"jarvis-mind-map-name\">Mind-Map 名称</label><input type=\"text\" class=\"form-control\" ng-model=\"data.mind_map_name\" ng-blur=\"titlePassed = true\" id=\"jarvis-mind-map-name\" placeholder=\"Mind Map 名称\"></div><div class=\"form-group\"><label for=\"jarvis-mind-map-comment\">备注</label><textarea type=\"text\" rows=\"8\" class=\"form-control single-input\" id=\"jarvis-mind-map-comment\" placeholder=\"Mind Map 备注\"> {{ data.mind_map_comment }}\r" +
+    "\n" +
+    "        </textarea></div></div><div class=\"modal-footer\"><button class=\"btn btn-primary\" ng-click=\"ok()\">确定</button> <button class=\"btn btn-warning\" ng-click=\"cancel()\">取消</button></div>"
+  );
+
+
+  $templateCache.put('ui/dialog/file/uploadToRepo.tpl.html',
+    "<div class=\"modal-header\"><h3 class=\"modal-title\">{{ 'upload-to-repo' | lang:'ui' }}</h3></div><div class=\"modal-body\"><div class=\"form-group\"><label for=\"jarvis-mind-map-name\">Mind-Map 名称</label><input type=\"text\" class=\"form-control\" ng-model=\"data.mind_map_name\" ng-blur=\"titlePassed = true\" id=\"jarvis-mind-map-name\" placeholder=\"Mind Map 名称\"></div><div class=\"form-group\"><label for=\"jarvis-mind-map-comment\">备注</label><textarea type=\"text\" rows=\"8\" class=\"form-control single-input\" id=\"jarvis-mind-map-comment\" placeholder=\"Mind Map 备注\" ng-model=\"data.mind_map_comment\">\r" +
+    "\n" +
+    "        </textarea></div><div ng-hide=\"upload_rsp.type\"></div></div><div class=\"modal-footer\"><button class=\"btn btn-primary\" ng-click=\"ok()\">确定</button> <button class=\"btn btn-warning\" ng-click=\"cancel()\">取消</button></div>"
   );
 
 
@@ -2225,8 +2283,14 @@ angular.module('kityminderEditor').run(['$templateCache', function($templateCach
 
 
   $templateCache.put('ui/dialog/imExportNode/imExportNode.tpl.html',
-    "<div class=\"modal-header\"><h3 class=\"modal-title\">{{ title }}</h3></div><div class=\"modal-body\"><textarea type=\"text\" class=\"form-control single-input\" rows=\"8\" ng-keydown=\"shortCut($event);\" ng-model=\"value\" ng-readonly=\"type === 'export'\">\n" +
+    "<div class=\"modal-header\"><h3 class=\"modal-title\">{{ title }}</h3></div><div class=\"modal-body\"><textarea type=\"text\" class=\"form-control single-input\" rows=\"8\" ng-keydown=\"shortCut($event);\" ng-model=\"value\" ng-readonly=\"type === 'export'\">\r" +
+    "\n" +
     "    </textarea></div><div class=\"modal-footer\"><button class=\"btn btn-primary\" ng-click=\"ok()\" ng-disabled=\"type === 'import' && value == ''\">OK</button> <button class=\"btn btn-warning\" ng-click=\"cancel()\">Cancel</button></div>"
+  );
+
+
+  $templateCache.put('ui/dialog/imExportNode/importJarvisNode.tpl.html',
+    "<div class=\"modal-header\"><h3 class=\"modal-title\">导入Jarvis节点</h3></div><div class=\"modal-body\"><div><label for=\"node-search\">搜索节点</label><input type=\"text\" id=\"node-search\" class=\"form-control search-input\" ng-model=\"node_search\"></div><table class=\"table table-striped table-responsive\" ng-init=\"load_all_nodes()\"><thead><tr><th>节点名称</th><th>操作</th></tr></thead><tbody><tr ng-repeat=\"node in jarvis_nodes | filter:node_search\"><td>{{ node.node_name }}</td><td><a ng-click=\"import_jarvis_node(node.data)\" style=\"cursor: pointer\">导入</a></td></tr></tbody></table></div><div class=\"modal-footer\"><button class=\"btn btn-warning\" ng-click=\"cancel()\">Cancel</button></div>"
   );
 
 
@@ -2268,7 +2332,15 @@ angular.module('kityminderEditor')
 			zoom: [10, 20, 30, 50, 80, 100, 120, 150, 200],
 
             // 图片上传接口
-            imageUpload: 'server/imageUpload.php'
+            // imageUpload: 'server/imageUpload.php'
+			imageUpload: '/kityminder/upload_image',
+
+			jsonUpload: '/jarvis/upload_mind_map/',
+			loadAllJson: '/jarvis/load_all_mind_map_json',
+			jarvisNodes: '/jarvis/load_nodes',
+
+            // ui/service/config.service.js 写什么，运行 grunt dev，在kityminder.editor.js就会生成什么
+            // imageUpload: 'xxx'
 		};
 
 		this.set = function(key, value) {
@@ -2497,6 +2569,10 @@ angular.module('kityminderEditor')
 
 					'search':'搜索',
 
+					'upload-to-repo': '上传至仓库',
+					'load-from-repo': '从仓库读取',
+					'publish-minder': '发布思维导图',
+
 					'expandtoleaf': '展开',
 
 					'back': '返回',
@@ -2507,7 +2583,8 @@ angular.module('kityminderEditor')
 					'tabs': {
 						'idea': '思路',
 						'appearence': '外观',
-						'view': '视图'
+						'view': '视图',
+						'file': '文件',
 					},
 
 					'quickvisit': {
@@ -2948,6 +3025,36 @@ angular.module('kityminderEditor').service('revokeDialog', ['$modal', 'minder.se
             });
         });
 
+        minder.on('importJarvisNodeData', function() {
+            parentFSM.jump('modal', 'import-text-modal');
+            var importModal = $modal.open({
+                animation: true,
+                templateUrl: 'ui/dialog/imExportNode/importJarvisNode.tpl.html',
+                controller: 'importJarvisNode.ctrl',
+                size: 'md',
+                resolve: {
+                    title: function() {
+                        return '导入Jarvis节点';
+                    },
+                    defaultValue: function() {
+                        return '';
+                    },
+                    type: function() {
+                        return 'import';
+                    }
+                }
+            });
+            editor.receiver.selectAll();
+
+            importModal.result.then(function(result) {
+                parentFSM.jump('normal', 'import-text-finish');
+            }, function() {
+                parentFSM.jump('normal', 'import-text-finish');
+                editor.receiver.selectAll();
+            });
+        });
+
+
     });
 
     return {};
@@ -2969,14 +3076,26 @@ angular.module('kityminderEditor')
             uploadImage: function(file) {
                 var url = config.get('imageUpload');
                 var fd = new FormData();
+
+                // 这里是附件的名称，服务器端用 key 来获取文件
                 fd.append('upload_file', file);
 
                 return $http.post(url, fd, {
                     transformRequest: angular.identity,
                     headers: {'Content-Type': undefined}
+                    // headers: {'Content-Type': 'application/x-www-form-urlencoded'}
                 });
+            },
+
+            upLoadJson: function (json_data, is_publish) {
+                var url = config.get('jsonUpload') + is_publish;
+                return $http.post(url, json_data);
+            },
+
+            loadAllJson: function (){
+                return $http.get(config.get('loadAllJson'));
             }
-        }
+        };
     }]);
 angular.module('kityminderEditor')
     .service('valueTransfer', function() {
@@ -3014,6 +3133,102 @@ angular.module('kityminderEditor')
 
 		};
 	}]);
+angular.module('kityminderEditor')
+    .controller('loadFromRepo.ctrl', ['$http', '$scope', '$modalInstance', 'server', 'config', function($http, $scope, $modalInstance, server, config) {
+
+        // console.log($scope.structs);
+        $scope.load_all_jsons = function (){
+            $http.get(config.get('loadAllJson')).then(function (response){
+                $scope.structs = response.data;
+            });
+        };
+
+        $scope.cancel = function () {
+            $modalInstance.dismiss('cancel');
+            editor.receiver.selectAll();
+        };
+
+        $scope.load_struct = function (json){
+            $scope.minder.importJson(json, 'json');
+            $modalInstance.dismiss('cancel');
+            editor.receiver.selectAll();
+        };
+
+    }]);
+angular.module('kityminderEditor')
+    .controller('publishMinder.ctrl', ['$http', '$scope', '$modalInstance', 'server', function($http, $scope, $modalInstance, server) {
+        $scope.data = {
+            mind_map_name: 'Jarvis Mind Map',
+            mind_map_comment: 'Online',
+        };
+        $scope.upload_rsp = {};
+        $scope.ok = function () {
+
+            server.upLoadJson({
+                name: $scope.data.mind_map_name,
+                comment: $scope.data.mind_map_comment,
+                data: $scope.minder.exportJson(),
+            }, 1).then(function (json){
+                if (json.data.errno === 0) {
+                    $scope.upload_rsp = {
+                        type: 'success',
+                        msg: json.data.msg,
+                    };
+                } else {
+                    $scope.upload_rsp = {
+                        type: 'danger',
+                        msg: json.data.msg,
+                    };
+                }
+            });
+
+            $modalInstance.close();
+            editor.receiver.selectAll();
+        };
+
+        $scope.cancel = function () {
+            $modalInstance.dismiss('cancel');
+            editor.receiver.selectAll();
+        };
+
+    }]);
+angular.module('kityminderEditor')
+    .controller('uploadToRepo.ctrl', ['$http', '$scope', '$modalInstance', 'server', function($http, $scope, $modalInstance, server) {
+        $scope.data = {
+            mind_map_name: '',
+            mind_map_comment: '',
+        };
+        $scope.upload_rsp = {};
+        $scope.ok = function () {
+
+            server.upLoadJson({
+                name: $scope.data.mind_map_name,
+                comment: $scope.data.mind_map_comment,
+                data: $scope.minder.exportJson(),
+            }, 0).then(function (json){
+                if (json.data.errno === 0) {
+                    $scope.upload_rsp = {
+                        type: 'success',
+                        msg: json.data.msg,
+                    };
+                } else {
+                    $scope.upload_rsp = {
+                        type: 'danger',
+                        msg: json.data.msg,
+                    };
+                }
+            });
+
+            $modalInstance.close();
+            editor.receiver.selectAll();
+        };
+
+        $scope.cancel = function () {
+            $modalInstance.dismiss('cancel');
+            editor.receiver.selectAll();
+        };
+
+    }]);
 angular.module('kityminderEditor')
     .controller('hyperlink.ctrl', ["$scope", "$modalInstance", "link", function ($scope, $modalInstance, link) {
 
@@ -3157,6 +3372,56 @@ angular.module('kityminderEditor')
 
     }]);
 angular.module('kityminderEditor')
+    .controller('importJarvisNode.ctrl', ['$scope', '$modalInstance', 'server', '$http', function($scope, $modalInstance, config, $http) {
+
+    // $scope.jarvis_nodes = [];
+    // for (var i=0; i++; i< 10000){
+    //     $scope.jarvis_nodes.push({ 'node_name': 'a' , 'data': {"text": 'b'}});
+    // };
+    // $scope.jarvis_nodes = [
+    //     {'node_name': 'ivix', 'data': {"text": "中心主题"}},
+    //     {'node_name': 'ma', 'data': {
+    //         "text": "分支主题",
+    //         "image": "http://localhost:5000/kityminder/read_image/0fcb4bdbf06f4bd6a43e52b9d249e87a.png",
+    //         "imageTitle": "",
+    //             "imageSize": {"width": 200, "height": 122},
+    //             "priority": 1,
+    //             "progress": 5,
+    //             "resource": ["标签1"]}},
+    // ];
+    $scope.load_all_nodes = function (){
+        $http.get('/jarvis/load_nodes').then(function (response){
+            $scope.jarvis_nodes = response.data;
+        });
+    };
+
+    $scope.node_search = '';
+    $scope.import_jarvis_node = function (json) {
+        var minder = window.minder;
+        var node = minder.getSelectedNode();
+        for (k in json) {
+            node.data[k] = json[k];
+        }
+        $scope.cancel();
+        editText();
+    };
+
+    function editText() {
+        var receiverElement = editor.receiver.element;
+        var fsm = editor.fsm;
+        var receiver = editor.receiver;
+
+        receiverElement.innerText = minder.queryCommandValue('text');
+        fsm.jump('input', 'input-request');
+        receiver.selectAll();
+    }
+
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+
+}]);
+angular.module('kityminderEditor')
     .controller('image.ctrl', ['$http', '$scope', '$modalInstance', 'image', 'server', function($http, $scope, $modalInstance, image, server) {
 
         $scope.data = {
@@ -3229,7 +3494,6 @@ angular.module('kityminderEditor')
 
         $scope.shortCut = function(e) {
             e.stopPropagation();
-
             if (e.keyCode == 13) {
                 $scope.ok();
             } else if (e.keyCode == 27) {
@@ -3637,6 +3901,29 @@ angular.module('kityminderEditor')
 			}
 		}
 	});
+angular.module('kityminderEditor')
+    .directive('loadFromRepo', ['$modal', function($modal) {
+        return {
+            restrict: 'E',
+            templateUrl: 'ui/directive/loadFromRepo/loadFromRepo.html',
+            scope: {
+                minder: '='
+            },
+            replace: true,
+            link: function ($scope) {
+                $scope.load_from_repo = function() {
+
+                    $modal.open({
+                        animation: true,
+                        templateUrl: 'ui/dialog/file/loadFromRepo.tpl.html',
+                        controller: 'loadFromRepo.ctrl',
+                        size: 'md',
+                        scope: $scope,
+                    });
+                };
+            }
+        };
+    }]);
 /**
  * @fileOverview
  *
@@ -4136,6 +4423,33 @@ angular.module('kityminderEditor')
 			}
 		}
 	}])
+angular.module('kityminderEditor')
+    .directive('publishMinder', ['$modal', 'server', function($modal, sever) {
+        return {
+            restrict: 'E',
+            templateUrl: 'ui/directive/publishMinder/publishMinder.html',
+            scope: {
+                minder: '='
+            },
+            replace: true,
+            link: function ($scope) {
+                $scope.publish_minder = function() {
+                    $modal.open({
+                        animation: true,
+                        templateUrl: 'ui/dialog/file/publishMinder.tpl.html',
+                        controller: 'publishMinder.ctrl',
+                        size: 'md',
+                        scope: $scope
+                        // resolve: {
+                        //     image: function() {
+                        //         return image;
+                        //     }
+                        // }
+                    });
+                };
+            }
+        };
+    }]);
 angular.module('kityminderEditor')
     .directive('resourceEditor', function () {
         return {
@@ -4653,5 +4967,37 @@ angular.module('kityminderEditor')
             }
         }
     });
+angular.module('kityminderEditor')
+    .directive('uploadToRepo', ['$modal', function($modal) {
+        return {
+            restrict: 'E',
+            templateUrl: 'ui/directive/uploadToRepo/uploadToRepo.html',
+            scope: {
+                minder: '='
+            },
+            replace: true,
+            link: function ($scope) {
+                $scope.upload_to_repo = function() {
+                    $modal.open({
+                        animation: true,
+                        templateUrl: 'ui/dialog/file/uploadToRepo.tpl.html',
+                        controller: 'uploadToRepo.ctrl',
+                        size: 'md',
+                        scope: $scope
+                        // resolve: {
+                        //     image: function() {
+                        //         return image;
+                        //     }
+                        // }
+                    });
+
+                    // imageModal.result();
+                    // imageModal.result.then(function(result) {
+                    //     minder.execCommand('image', result.url, result.title || '');
+                    // });
+                };
+            }
+        };
+    }]);
 use('expose-editor');
 })();

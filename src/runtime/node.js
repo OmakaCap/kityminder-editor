@@ -77,12 +77,28 @@ define(function(require, exports, module) {
             next: 'idle'
         });
 
+         main.button({
+            position: 'bottom',
+            label: '导入Jarvis节点',
+            key: 'Alt + Q',
+            enable: function() {
+                var selectedNodes = minder.getSelectedNodes();
+                return selectedNodes.length == 1;
+            },
+            action: importJarvisNodeData,
+            next: 'idle'
+        });
+
         function importNodeData() {
             minder.fire('importNodeData');
         }
 
         function exportNodeData() {
             minder.fire('exportNodeData');
+        }
+
+        function importJarvisNodeData() {
+            minder.fire('importJarvisNodeData');
         }
 
         //main.button({

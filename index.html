@@ -37,7 +37,7 @@
     </style>
 </head>
 <body ng-app="kityminderDemo" ng-controller="MainController">
-    <h1 class="editor-title">KityMinder Editor - Powered By FEX</h1>
+    <h1 class="editor-title">Jarvis Mind Map Editor</h1>
     <kityminder-editor on-init="initEditor(editor, minder)"></kityminder-editor>
 </body>
 
@@ -78,6 +78,11 @@
 <script src="ui/dialog/hyperlink/hyperlink.ctrl.js"></script>
 <script src="ui/dialog/image/image.ctrl.js"></script>
 <script src="ui/dialog/imExportNode/imExportNode.ctrl.js"></script>
+<script src="ui/dialog/file/uploadToRepo.ctrl.js"></script>
+<script src="ui/dialog/file/loadFromRepo.ctrl.js"></script>
+<script src="ui/dialog/file/publishMinder.ctl.js"></script>
+<script src="ui/dialog/imExportNode/importJarvisNode.ctl.js"></script>
+
 <script src="ui/directive/topTab/topTab.directive.js"></script>
 <script src="ui/directive/undoRedo/undoRedo.directive.js"></script>
 <script src="ui/directive/appendNode/appendNode.directive.js"></script>
@@ -103,16 +108,22 @@
 <script src="ui/directive/navigator/navigator.directive.js"></script>
 <script src="ui/directive/searchBox/searchBox.directive.js"></script>
 <script src="ui/directive/searchBtn/searchBtn.directive.js"></script>
+<script src="ui/directive/uploadToRepo/uploadToRepo.directive.js"></script>
+<script src="ui/directive/loadFromRepo/loadFromRepo.directive.js"></script>
+<script src="ui/directive/publishMinder/publishMinder.directive.js"></script>
 
+<!-- 加入导入、导出的栏目 -->
+<script src="ui/diy.js"></script>
 
 <script>
 	angular.module('kityminderDemo', ['kityminderEditor'])
-			.controller('MainController', function($scope) {
-				$scope.initEditor = function(editor, minder) {
-					window.editor = editor;
-					window.minder = minder;
-				};
-			});
+        .controller('MainController', function($scope) {
+            $scope.initEditor = function(editor, minder) {
+                window.editor = editor;
+                window.minder = minder;
+            };
+
+        });
 
 </script>
 

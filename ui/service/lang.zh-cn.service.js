@@ -179,6 +179,10 @@ angular.module('kityminderEditor')
 
 					'search':'搜索',
 
+					'upload-to-repo': '上传至仓库',
+					'load-from-repo': '从仓库读取',
+					'publish-minder': '发布思维导图',
+
 					'expandtoleaf': '展开',
 
 					'back': '返回',
@@ -189,7 +193,8 @@ angular.module('kityminderEditor')
 					'tabs': {
 						'idea': '思路',
 						'appearence': '外观',
-						'view': '视图'
+						'view': '视图',
+						'file': '文件',
 					},
 
 					'quickvisit': {

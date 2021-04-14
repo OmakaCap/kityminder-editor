@@ -51,10 +51,18 @@ angular.module('kityminderEditor').run(['$templateCache', function($templateCach
   );
 
 
+  $templateCache.put('ui/directive/loadFromRepo/loadFromRepo.html',
+    "<div class=\"btn-group-vertical\" dropdown is-open=\"isopen\"><div class=\"\" is-open=\"isopen\"><button type=\"button\" class=\"btn btn-default\" title=\"{{ 'load-from-repo' | lang:'ui' }}\" ng-class=\"{'active': isopen}\" ng-click=\"load_from_repo()\">{{ 'load-from-repo' | lang:'ui' }}</button></div></div>"
+  );
+
+
   $templateCache.put('ui/directive/navigator/navigator.html',
-    "<div class=\"nav-bar\"><div class=\"nav-btn zoom-in\" ng-click=\"minder.execCommand('zoomIn')\" title=\"{{ 'zoom-in' | lang : 'ui' }}\" ng-class=\"{ 'active' : getZoomRadio(zoom) == 0 }\"><div class=\"icon\"></div></div><div class=\"zoom-pan\"><div class=\"origin\" ng-style=\"{'transform': 'translate(0, ' + getHeight(100) + 'px)'}\" ng-click=\"minder.execCommand('zoom', 100);\"></div><div class=\"indicator\" ng-style=\"{\n" +
-    "             'transform': 'translate(0, ' + getHeight(zoom) + 'px)',\n" +
-    "             'transition': 'transform 200ms'\n" +
+    "<div class=\"nav-bar\"><div class=\"nav-btn zoom-in\" ng-click=\"minder.execCommand('zoomIn')\" title=\"{{ 'zoom-in' | lang : 'ui' }}\" ng-class=\"{ 'active' : getZoomRadio(zoom) == 0 }\"><div class=\"icon\"></div></div><div class=\"zoom-pan\"><div class=\"origin\" ng-style=\"{'transform': 'translate(0, ' + getHeight(100) + 'px)'}\" ng-click=\"minder.execCommand('zoom', 100);\"></div><div class=\"indicator\" ng-style=\"{\r" +
+    "\n" +
+    "             'transform': 'translate(0, ' + getHeight(zoom) + 'px)',\r" +
+    "\n" +
+    "             'transition': 'transform 200ms'\r" +
+    "\n" +
     "             }\"></div></div><div class=\"nav-btn zoom-out\" ng-click=\"minder.execCommand('zoomOut')\" title=\"{{ 'zoom-out' | lang : 'ui' }}\" ng-class=\"{ 'active' : getZoomRadio(zoom) == 1 }\"><div class=\"icon\"></div></div><div class=\"nav-btn hand\" ng-click=\"minder.execCommand('hand')\" title=\"{{ 'hand' | lang : 'ui' }}\" ng-class=\"{ 'active' : minder.queryCommandState('hand') == 1 }\"><div class=\"icon\"></div></div><div class=\"nav-btn camera\" ng-click=\"minder.execCommand('camera', minder.getRoot(), 600);\" title=\"{{ 'camera' | lang : 'ui' }}\"><div class=\"icon\"></div></div><div class=\"nav-btn nav-trigger\" ng-class=\"{'active' : isNavOpen}\" ng-click=\"toggleNavOpen()\" title=\"{{ 'navigator' | lang : 'ui' }}\"><div class=\"icon\"></div></div></div><div class=\"nav-previewer\" ng-show=\"isNavOpen\"></div>"
   );
 
@@ -65,13 +73,20 @@ angular.module('kityminderEditor').run(['$templateCache', function($templateCach
 
 
   $templateCache.put('ui/directive/noteEditor/noteEditor.html',
-    "<div class=\"panel panel-default\" ng-init=\"noteEditorOpen = false\" ng-show=\"noteEditorOpen\"><div class=\"panel-heading\"><h3 class=\"panel-title\">备注</h3><span>（<a class=\"help\" href=\"https://www.zybuluo.com/techird/note/46064\" target=\"_blank\">支持 GFM 语法书写</a>）</span> <i class=\"close-note-editor glyphicon glyphicon-remove\" ng-click=\"closeNoteEditor()\"></i></div><div class=\"panel-body\"><div ng-show=\"noteEnabled\" ui-codemirror=\"{ onLoad: codemirrorLoaded }\" ng-model=\"noteContent\" ui-codemirror-opts=\"{\n" +
-    "                gfm: true,\n" +
-    "                breaks: true,\n" +
-    "                lineWrapping : true,\n" +
-    "                mode: 'gfm',\n" +
-    "                dragDrop: false,\n" +
-    "                lineNumbers:true\n" +
+    "<div class=\"panel panel-default\" ng-init=\"noteEditorOpen = false\" ng-show=\"noteEditorOpen\"><div class=\"panel-heading\"><h3 class=\"panel-title\">备注</h3><span>（<a class=\"help\" href=\"https://www.zybuluo.com/techird/note/46064\" target=\"_blank\">支持 GFM 语法书写</a>）</span> <i class=\"close-note-editor glyphicon glyphicon-remove\" ng-click=\"closeNoteEditor()\"></i></div><div class=\"panel-body\"><div ng-show=\"noteEnabled\" ui-codemirror=\"{ onLoad: codemirrorLoaded }\" ng-model=\"noteContent\" ui-codemirror-opts=\"{\r" +
+    "\n" +
+    "                gfm: true,\r" +
+    "\n" +
+    "                breaks: true,\r" +
+    "\n" +
+    "                lineWrapping : true,\r" +
+    "\n" +
+    "                mode: 'gfm',\r" +
+    "\n" +
+    "                dragDrop: false,\r" +
+    "\n" +
+    "                lineNumbers:true\r" +
+    "\n" +
     "             }\"></div><p ng-show=\"!noteEnabled\" class=\"km-note-tips\">请选择节点编辑备注</p></div></div>"
   );
 
@@ -93,6 +108,11 @@ angular.module('kityminderEditor').run(['$templateCache', function($templateCach
 
   $templateCache.put('ui/directive/progressEditor/progressEditor.html',
     "<ul class=\"km-progress tool-group\" ng-disabled=\"commandDisabled\"><li class=\"km-progress-item tool-group-item\" ng-repeat=\"p in progresses\" ng-click=\"commandDisabled || minder.execCommand('progress', p)\" ng-class=\"{ active: commandValue == p }\" title=\"{{ getProgressTitle(p) }}\"><div class=\"km-progress-icon tool-group-icon progress-{{p}}\"></div></li></ul>"
+  );
+
+
+  $templateCache.put('ui/directive/publishMinder/publishMinder.html',
+    "<div class=\"btn-group-vertical\" dropdown is-open=\"isopen\"><button type=\"button\" class=\"btn btn-default\" title=\"{{ 'publish-minder' | lang:'ui' }}\" ng-class=\"{'active': isopen}\" ng-click=\"publish_minder()\">{{ 'publish-minder' | lang:'ui' }}</button></div>"
   );
 
 
@@ -132,12 +152,36 @@ angular.module('kityminderEditor').run(['$templateCache', function($templateCach
 
 
   $templateCache.put('ui/directive/topTab/topTab.html',
-    "<tabset><tab heading=\"{{ 'idea' | lang: 'ui/tabs'; }}\" ng-click=\"toggleTopTab('idea')\" select=\"setCurTab('idea')\"><undo-redo editor=\"editor\"></undo-redo><append-node minder=\"minder\"></append-node><arrange minder=\"minder\"></arrange><operation minder=\"minder\"></operation><hyper-link minder=\"minder\"></hyper-link><image-btn minder=\"minder\"></image-btn><note-btn minder=\"minder\"></note-btn><priority-editor minder=\"minder\"></priority-editor><progress-editor minder=\"minder\"></progress-editor><resource-editor minder=\"minder\"></resource-editor></tab><tab heading=\"{{ 'appearence' | lang: 'ui/tabs'; }}\" ng-click=\"toggleTopTab('appearance')\" select=\"setCurTab('appearance')\"><template-list minder=\"minder\" class=\"inline-directive\"></template-list><theme-list minder=\"minder\"></theme-list><layout minder=\"minder\" class=\"inline-directive\"></layout><style-operator minder=\"minder\" class=\"inline-directive\"></style-operator><font-operator minder=\"minder\" class=\"inline-directive\"></font-operator></tab><tab heading=\"{{ 'view' | lang: 'ui/tabs'; }}\" ng-click=\"toggleTopTab('view')\" select=\"setCurTab('view')\"><expand-level minder=\"minder\"></expand-level><select-all minder=\"minder\"></select-all><search-btn minder=\"minder\"></search-btn></tab></tabset>"
+    "<tabset><tab heading=\"{{ 'idea' | lang: 'ui/tabs'; }}\" ng-click=\"toggleTopTab('idea')\" select=\"setCurTab('idea')\"><undo-redo editor=\"editor\"></undo-redo><append-node minder=\"minder\"></append-node><arrange minder=\"minder\"></arrange><operation minder=\"minder\"></operation><hyper-link minder=\"minder\"></hyper-link><image-btn minder=\"minder\"></image-btn><note-btn minder=\"minder\"></note-btn><priority-editor minder=\"minder\"></priority-editor><progress-editor minder=\"minder\"></progress-editor><resource-editor minder=\"minder\"></resource-editor></tab><tab heading=\"{{ 'appearence' | lang: 'ui/tabs'; }}\" ng-click=\"toggleTopTab('appearance')\" select=\"setCurTab('appearance')\"><template-list minder=\"minder\" class=\"inline-directive\"></template-list><theme-list minder=\"minder\"></theme-list><layout minder=\"minder\" class=\"inline-directive\"></layout><style-operator minder=\"minder\" class=\"inline-directive\"></style-operator><font-operator minder=\"minder\" class=\"inline-directive\"></font-operator></tab><tab heading=\"{{ 'view' | lang: 'ui/tabs'; }}\" ng-click=\"toggleTopTab('view')\" select=\"setCurTab('view')\"><expand-level minder=\"minder\"></expand-level><select-all minder=\"minder\"></select-all><search-btn minder=\"minder\"></search-btn></tab><tab heading=\"{{ 'file' | lang: 'ui/tabs'; }}\" ng-click=\"toggleTopTab('file')\" select=\"setCurTab('file')\"><upload-to-repo minder=\"minder\"></upload-to-repo><load-from-repo minder=\"minder\"></load-from-repo><publish-minder minder=\"minder\"></publish-minder></tab></tabset>"
   );
 
 
   $templateCache.put('ui/directive/undoRedo/undoRedo.html',
     "<div class=\"km-btn-group do-group\"><div class=\"km-btn-item undo\" ng-disabled=\"editor.history.hasUndo() == false\" ng-click=\"editor.history.hasUndo() == false || editor.history.undo();\" title=\"{{ 'undo' | lang:'ui' }}\"><i class=\"km-btn-icon\"></i></div><div class=\"km-btn-item redo\" ng-disabled=\"editor.history.hasRedo() == false\" ng-click=\"editor.history.hasRedo() == false || editor.history.redo()\" title=\"{{ 'redo' | lang:'ui' }}\"><i class=\"km-btn-icon\"></i></div></div>"
+  );
+
+
+  $templateCache.put('ui/directive/uploadToRepo/uploadToRepo.html',
+    "<div class=\"btn-group-vertical\" dropdown is-open=\"isopen\"><div class=\"\" dropdown is-open=\"isopen\"><button type=\"button\" class=\"btn btn-default\" title=\"{{ 'upload-to-repo' | lang:'ui' }}\" ng-class=\"{'active': isopen}\" ng-click=\"upload_to_repo()\">{{ 'upload-to-repo' | lang:'ui' }}</button></div></div>"
+  );
+
+
+  $templateCache.put('ui/dialog/file/loadFromRepo.tpl.html',
+    "<div class=\"modal-header\"><h3 class=\"modal-title\">{{ 'load-from-repo' | lang:'ui' }}</h3></div><div class=\"modal-body\"><table class=\"table table-striped\" ng-init=\"load_all_jsons()\"><thead><tr><th>Name</th><th>Editor</th><th>Comment</th><th>Updated Datetime</th><th>Operation</th></tr></thead><tbody ng-repeat=\"x in structs\"><tr><td>{{ x.name }}</td><td>{{ x.user || '-' }}</td><td>{{ x.comment || '-' }}</td><td>{{ x.updated_datetime || '-' }}</td><td><a ng-click=\"load_struct(x.json)\" style=\"cursor: pointer\">Load</a></td></tr></tbody></table></div><div class=\"modal-footer\"><button class=\"btn btn-warning\" ng-click=\"cancel()\">取消</button></div>"
+  );
+
+
+  $templateCache.put('ui/dialog/file/publishMinder.tpl.html',
+    "<div class=\"modal-header\"><h3 class=\"modal-title\">{{ 'publish-minder' | lang:'ui' }}</h3></div><div class=\"modal-body\"><div class=\"form-group\"><label for=\"jarvis-mind-map-name\">Mind-Map 名称</label><input type=\"text\" class=\"form-control\" ng-model=\"data.mind_map_name\" ng-blur=\"titlePassed = true\" id=\"jarvis-mind-map-name\" placeholder=\"Mind Map 名称\"></div><div class=\"form-group\"><label for=\"jarvis-mind-map-comment\">备注</label><textarea type=\"text\" rows=\"8\" class=\"form-control single-input\" id=\"jarvis-mind-map-comment\" placeholder=\"Mind Map 备注\"> {{ data.mind_map_comment }}\r" +
+    "\n" +
+    "        </textarea></div></div><div class=\"modal-footer\"><button class=\"btn btn-primary\" ng-click=\"ok()\">确定</button> <button class=\"btn btn-warning\" ng-click=\"cancel()\">取消</button></div>"
+  );
+
+
+  $templateCache.put('ui/dialog/file/uploadToRepo.tpl.html',
+    "<div class=\"modal-header\"><h3 class=\"modal-title\">{{ 'upload-to-repo' | lang:'ui' }}</h3></div><div class=\"modal-body\"><div class=\"form-group\"><label for=\"jarvis-mind-map-name\">Mind-Map 名称</label><input type=\"text\" class=\"form-control\" ng-model=\"data.mind_map_name\" ng-blur=\"titlePassed = true\" id=\"jarvis-mind-map-name\" placeholder=\"Mind Map 名称\"></div><div class=\"form-group\"><label for=\"jarvis-mind-map-comment\">备注</label><textarea type=\"text\" rows=\"8\" class=\"form-control single-input\" id=\"jarvis-mind-map-comment\" placeholder=\"Mind Map 备注\" ng-model=\"data.mind_map_comment\">\r" +
+    "\n" +
+    "        </textarea></div><div ng-hide=\"upload_rsp.type\"></div></div><div class=\"modal-footer\"><button class=\"btn btn-primary\" ng-click=\"ok()\">确定</button> <button class=\"btn btn-warning\" ng-click=\"cancel()\">取消</button></div>"
   );
 
 
@@ -147,8 +191,14 @@ angular.module('kityminderEditor').run(['$templateCache', function($templateCach
 
 
   $templateCache.put('ui/dialog/imExportNode/imExportNode.tpl.html',
-    "<div class=\"modal-header\"><h3 class=\"modal-title\">{{ title }}</h3></div><div class=\"modal-body\"><textarea type=\"text\" class=\"form-control single-input\" rows=\"8\" ng-keydown=\"shortCut($event);\" ng-model=\"value\" ng-readonly=\"type === 'export'\">\n" +
+    "<div class=\"modal-header\"><h3 class=\"modal-title\">{{ title }}</h3></div><div class=\"modal-body\"><textarea type=\"text\" class=\"form-control single-input\" rows=\"8\" ng-keydown=\"shortCut($event);\" ng-model=\"value\" ng-readonly=\"type === 'export'\">\r" +
+    "\n" +
     "    </textarea></div><div class=\"modal-footer\"><button class=\"btn btn-primary\" ng-click=\"ok()\" ng-disabled=\"type === 'import' && value == ''\">OK</button> <button class=\"btn btn-warning\" ng-click=\"cancel()\">Cancel</button></div>"
+  );
+
+
+  $templateCache.put('ui/dialog/imExportNode/importJarvisNode.tpl.html',
+    "<div class=\"modal-header\"><h3 class=\"modal-title\">导入Jarvis节点</h3></div><div class=\"modal-body\"><div><label for=\"node-search\">搜索节点</label><input type=\"text\" id=\"node-search\" class=\"form-control search-input\" ng-model=\"node_search\"></div><table class=\"table table-striped table-responsive\" ng-init=\"load_all_nodes()\"><thead><tr><th>节点名称</th><th>操作</th></tr></thead><tbody><tr ng-repeat=\"node in jarvis_nodes | filter:node_search\"><td>{{ node.node_name }}</td><td><a ng-click=\"import_jarvis_node(node.data)\" style=\"cursor: pointer\">导入</a></td></tr></tbody></table></div><div class=\"modal-footer\"><button class=\"btn btn-warning\" ng-click=\"cancel()\">Cancel</button></div>"
   );
 
 

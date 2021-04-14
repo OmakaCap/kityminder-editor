@@ -18,7 +18,15 @@ angular.module('kityminderEditor')
 			zoom: [10, 20, 30, 50, 80, 100, 120, 150, 200],
 
             // 图片上传接口
-            imageUpload: 'server/imageUpload.php'
+            // imageUpload: 'server/imageUpload.php'
+			imageUpload: '/kityminder/upload_image',
+
+			jsonUpload: '/jarvis/upload_mind_map/',
+			loadAllJson: '/jarvis/load_all_mind_map_json',
+			jarvisNodes: '/jarvis/load_nodes',
+
+            // ui/service/config.service.js 写什么，运行 grunt dev，在kityminder.editor.js就会生成什么
+            // imageUpload: 'xxx'
 		};
 
 		this.set = function(key, value) {

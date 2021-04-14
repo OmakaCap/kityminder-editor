@@ -76,6 +76,36 @@ angular.module('kityminderEditor').service('revokeDialog', ['$modal', 'minder.se
             });
         });
 
+        minder.on('importJarvisNodeData', function() {
+            parentFSM.jump('modal', 'import-text-modal');
+            var importModal = $modal.open({
+                animation: true,
+                templateUrl: 'ui/dialog/imExportNode/importJarvisNode.tpl.html',
+                controller: 'importJarvisNode.ctrl',
+                size: 'md',
+                resolve: {
+                    title: function() {
+                        return '导入Jarvis节点';
+                    },
+                    defaultValue: function() {
+                        return '';
+                    },
+                    type: function() {
+                        return 'import';
+                    }
+                }
+            });
+            editor.receiver.selectAll();
+
+            importModal.result.then(function(result) {
+                parentFSM.jump('normal', 'import-text-finish');
+            }, function() {
+                parentFSM.jump('normal', 'import-text-finish');
+                editor.receiver.selectAll();
+            });
+        });
+
+
     });
 
     return {};

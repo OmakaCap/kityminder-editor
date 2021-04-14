@@ -71,7 +71,6 @@ angular.module('kityminderEditor')
 
         $scope.shortCut = function(e) {
             e.stopPropagation();
-
             if (e.keyCode == 13) {
                 $scope.ok();
             } else if (e.keyCode == 27) {
